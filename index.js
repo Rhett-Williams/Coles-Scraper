@@ -1,15 +1,10 @@
-const express = require('express')
-const cheerio = require("cheerio")
-const axios = require('axios');
 const nodemailer = require('nodemailer');
+
 const { getColesData } = require('./coles');
 
 if (process.env.NODE_ENV !== "production") {
     require("dotenv").config();
   }
-
-const PORT = 3000;
-const app = express()
 
 const transporter = nodemailer.createTransport({
     port: 465,               // true for 465, false for other ports
@@ -38,17 +33,8 @@ const getAllData = async () => {
         else
           console.log(info);
      });
-
+     console.log("the data", colesData)
     return colesData
 }
 
-app.get('/api', async (req, res) => {
-   const data = await getAllData()
-   if(data) {
-       res.send(data);
-   }else {
-      res.json({msg : " Response data not recieved.."})
-   }
-});
-
-app.listen(PORT, () => console.log(`server is 1now listening to port ${PORT}`))
+getAllData()

@@ -1,6 +1,7 @@
 const nodemailer = require('nodemailer');
 
 const { getColesData } = require('./coles');
+const { getWooliesData } = require('./woolies');
 
 if (process.env.NODE_ENV !== "production") {
     require("dotenv").config();
@@ -18,13 +19,20 @@ const transporter = nodemailer.createTransport({
 
 const getAllData = async () => {
     const colesData = await getColesData()
-
+    const wooliesData = await getWooliesData()
+    console.log("woolies", wooliesData)
     const mailData = {
         from: process.env.EMAIL,  // sender address
           to: process.env.SENDER_EMAILS.split(' '),   // list of receivers
           subject: 'Prices',
           text: 'The prices yo',
-          html: `<div>${colesData}</div>`,
+          html: `
+                <h1>Coles:</h1>
+            <div>${colesData}</div>
+                </br>
+                <h1>Woolies:</h1>
+            <div>${wooliesData}</div>
+            `,
         };
 
     transporter.sendMail(mailData, function (err, info) {
@@ -33,7 +41,6 @@ const getAllData = async () => {
         else
           console.log(info);
      });
-     console.log("the data", colesData)
     return colesData
 }
 
